@@ -18,12 +18,15 @@ public class QQServer {
     private static HashMap<String,User> validUsers = new HashMap<>();
     static {
         for(int i = 0;i<10;i++) {
-            validUsers.put((i + 1) + "",new User((i + 1) + "","123456"));
+            validUsers.put((i + 1)  +  "",new User( (i + 1) + "","123456"));
         }
     }
 
     private boolean checkUser(String s,String psw){
         return s != null && validUsers.get(s) != null && psw.equals(validUsers.get(s).getPassID());
+    }
+    private void UserISOnline(){
+        ManageConnectClient.GetAll();
     }
     public QQServer() throws IOException {
         try {
@@ -42,7 +45,7 @@ public class QQServer {
                     oos.writeObject(mes);
                     ServerConnectClientThread sct = new ServerConnectClientThread(o.getUserID(), socket);
                     sct.start();
-                    ManageConnectClient.addSCT(o.getPassID(),sct);
+                    ManageConnectClient.addSCT(o.getUserID(),sct);
                 }
                 else {
                     mes.setMassageType(MessageType.LOGIN_FAIL);
