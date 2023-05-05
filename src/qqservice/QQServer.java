@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Map;
 
 public class QQServer {
     public static void main(String[] args) throws IOException {
@@ -26,7 +27,10 @@ public class QQServer {
         return s != null && validUsers.get(s) != null && psw.equals(validUsers.get(s).getPassID());
     }
     private void UserISOnline(){
-        ManageConnectClient.GetAll();
+        for (Map.Entry<String, ServerConnectClientThread> stringServerConnectClientThreadEntry : ManageConnectClient.GetAll()) {
+            if(stringServerConnectClientThreadEntry.getValue().getSocket().isClosed())
+                ManageConnectClient.delSCT(stringServerConnectClientThreadEntry.getKey());
+        }
     }
     public QQServer() throws IOException {
         try {

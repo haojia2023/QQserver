@@ -13,7 +13,11 @@ public class ServerConnectClientThread extends Thread{
     private Socket socket;
     private String userID;
 
-    public ServerConnectClientThread(String userID,Socket s){
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public ServerConnectClientThread(String userID, Socket s){
         this.socket = s;
         this.userID = userID;
     }
