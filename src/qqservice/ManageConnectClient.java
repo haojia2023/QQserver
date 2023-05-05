@@ -27,4 +27,13 @@ public class ManageConnectClient {
     public static void delSCT(String userID){
         hs.remove(userID);
     }
+
+    public static void UpdateOnline(){
+        for (Map.Entry<String, ServerConnectClientThread> stringServerConnectClientThreadEntry : GetAll()) {
+            System.out.println(stringServerConnectClientThreadEntry.getKey() + stringServerConnectClientThreadEntry.getValue().getSocket().isClosed());
+            if(stringServerConnectClientThreadEntry.getValue().getSocket().isClosed()) {
+                delSCT(stringServerConnectClientThreadEntry.getKey());
+            }
+        }
+    }
 }

@@ -26,12 +26,7 @@ public class QQServer {
     private boolean checkUser(String s,String psw){
         return s != null && validUsers.get(s) != null && psw.equals(validUsers.get(s).getPassID());
     }
-    private void UserISOnline(){
-        for (Map.Entry<String, ServerConnectClientThread> stringServerConnectClientThreadEntry : ManageConnectClient.GetAll()) {
-            if(stringServerConnectClientThreadEntry.getValue().getSocket().isClosed())
-                ManageConnectClient.delSCT(stringServerConnectClientThreadEntry.getKey());
-        }
-    }
+
     public QQServer() throws IOException {
         try {
             ss = new ServerSocket(9999);
@@ -44,15 +39,21 @@ public class QQServer {
                 Message mes = new Message();
 
 
-                if (checkUser(o.getUserID(),o.getPassID())) {
-                    mes.setMassageType(MessageType.LOGIN_SUCCEED);
+                String userID = o.getUserID();
+                if (checkUser(userID,o.getPassID())) {
+                    mes.setMessageType(MessageType.LOGIN_SUCCEED);
                     oos.writeObject(mes);
-                    ServerConnectClientThread sct = new ServerConnectClientThread(o.getUserID(), socket);
+                    ServerConnectClientThread sct = ManageConnectClient.searchSCT(userID);
+                    if(sct != null) {
+                        sct.getSocket().close();
+                        sct.setLoop(false);
+                    }
+                    sct = new ServerConnectClientThread(userID, socket);
                     sct.start();
-                    ManageConnectClient.addSCT(o.getUserID(),sct);
+                    ManageConnectClient.addSCT(userID,sct);
                 }
                 else {
-                    mes.setMassageType(MessageType.LOGIN_FAIL);
+                    mes.setMessageType(MessageType.LOGIN_FAIL);
                     oos.writeObject(mes);
                     socket.close();
                 }
