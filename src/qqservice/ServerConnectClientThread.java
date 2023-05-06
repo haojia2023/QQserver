@@ -63,6 +63,9 @@ public class ServerConnectClientThread extends Thread{
                         new ObjectOutputStream(ManageConnectClient.searchSCT(o.getGetter()).getSocket().getOutputStream())
                                 .writeObject(o);
                     }
+                }else if(messageType.equals(MessageType.File_MES)){
+                    new ObjectOutputStream(ManageConnectClient.searchSCT(o.getGetter()).getSocket().getOutputStream())
+                            .writeObject(o);
                 }
             } catch (Exception e) {
 
