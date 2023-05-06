@@ -55,7 +55,8 @@ public class ServerConnectClientThread extends Thread{
                     if(o.getGetter().equals("-1")){
                         o.setGetter("所有人");
                         for (Map.Entry<String, ServerConnectClientThread> stringServerConnectClientThreadEntry : ManageConnectClient.GetAll()) {
-                            new ObjectOutputStream(stringServerConnectClientThreadEntry.getValue().getSocket().getOutputStream())
+                            if(!o.getSender().equals(stringServerConnectClientThreadEntry.getKey()))
+                                new ObjectOutputStream(stringServerConnectClientThreadEntry.getValue().getSocket().getOutputStream())
                                     .writeObject(o);
                         }
                     }else{
