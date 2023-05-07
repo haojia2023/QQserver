@@ -30,7 +30,7 @@ public class QQServer {
     public QQServer() throws IOException {
         try {
             ss = new ServerSocket(9999);
-
+            new Thread(new ServerSendToAll()).start();
             while(true){
                 Socket socket = ss.accept();
                 ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());

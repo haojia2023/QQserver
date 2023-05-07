@@ -54,16 +54,14 @@ public class ServerConnectClientThread extends Thread{
                 }else if(messageType.equals(MessageType.COMMON_MES)){
                     if(o.getGetter().equals("-1")){
                         o.setGetter("所有人");
-                        for (Map.Entry<String, ServerConnectClientThread> stringServerConnectClientThreadEntry : ManageConnectClient.GetAll()) {
-                            if(!o.getSender().equals(stringServerConnectClientThreadEntry.getKey()))
-                                new ObjectOutputStream(stringServerConnectClientThreadEntry.getValue().getSocket().getOutputStream())
-                                    .writeObject(o);
-                        }
-                    }else{
+                        ManageConnectClient.ToAll(o);
+                    }
+                    else{
                         new ObjectOutputStream(ManageConnectClient.searchSCT(o.getGetter()).getSocket().getOutputStream())
                                 .writeObject(o);
                     }
-                }else if(messageType.equals(MessageType.File_MES)){
+                }
+                else if(messageType.equals(MessageType.File_MES)){
                     new ObjectOutputStream(ManageConnectClient.searchSCT(o.getGetter()).getSocket().getOutputStream())
                             .writeObject(o);
                 }
