@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 
 public class QQServer {
@@ -51,6 +52,15 @@ public class QQServer {
                     sct = new ServerConnectClientThread(userID, socket);
                     sct.start();
                     ManageConnectClient.addSCT(userID,sct);
+                    //开始发送离线消息
+                    switch (ManageOfflineMessage.SendMesList(userID, socket.getOutputStream())){
+                        case 0:
+                            System.out.println(userID + "的离线消息没有发送成功");
+                            break;
+                        case 1:
+                            System.out.println(userID + "的离线消息全部发送成功");
+                            break;
+                    }
                 }
                 else {
                     mes.setMessageType(MessageType.LOGIN_FAIL);

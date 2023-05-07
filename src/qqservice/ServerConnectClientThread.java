@@ -27,6 +27,15 @@ public class ServerConnectClientThread extends Thread{
         this.userID = userID;
     }
 
+    private void SendMessage(ServerConnectClientThread sct,Message o){
+        try {
+            if(sct == null)throw new IOException();
+            new ObjectOutputStream(sct.getSocket().getOutputStream())
+                    .writeObject(o);
+        } catch (IOException e) {
+            ManageOfflineMessage.AddMessage(o.getGetter(),o);
+        }
+    }
 
     @Override
     public void run() {
@@ -52,20 +61,16 @@ public class ServerConnectClientThread extends Thread{
                     socket.close();
                     break;
                 }else if(messageType.equals(MessageType.COMMON_MES)){
-                    if(o.getGetter().equals("-1")){
-                        o.setGetter("所有人");
+                    if(o.getGetter().equals("所有人")){
                         for (Map.Entry<String, ServerConnectClientThread> stringServerConnectClientThreadEntry : ManageConnectClient.GetAll()) {
                             if(!o.getSender().equals(stringServerConnectClientThreadEntry.getKey()))
-                                new ObjectOutputStream(stringServerConnectClientThreadEntry.getValue().getSocket().getOutputStream())
-                                    .writeObject(o);
+                                SendMessage(stringServerConnectClientThreadEntry.getValue(),o);
                         }
                     }else{
-                        new ObjectOutputStream(ManageConnectClient.searchSCT(o.getGetter()).getSocket().getOutputStream())
-                                .writeObject(o);
+                        SendMessage(ManageConnectClient.searchSCT(o.getGetter()),o);
                     }
                 }else if(messageType.equals(MessageType.File_MES)){
-                    new ObjectOutputStream(ManageConnectClient.searchSCT(o.getGetter()).getSocket().getOutputStream())
-                            .writeObject(o);
+                    SendMessage(ManageConnectClient.searchSCT(o.getGetter()),o);
                 }
             } catch (Exception e) {
 
