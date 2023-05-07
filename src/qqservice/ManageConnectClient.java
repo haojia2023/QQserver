@@ -1,13 +1,21 @@
 package qqservice;
 
+import qqcommon.Message;
+
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 public class ManageConnectClient {
-    private static HashMap<String,ServerConnectClientThread> hs = new HashMap<>();
+    private static final HashMap<String,ServerConnectClientThread> hs = new HashMap<>();
 
-    public static java.util.Set<Map.Entry<String, ServerConnectClientThread>> GetAll(){
-        return hs.entrySet();
+    public static void ToAll(Message o) throws IOException {
+        for (Map.Entry<String, ServerConnectClientThread> stringServerConnectClientThreadEntry : hs.entrySet()) {
+            if (!o.getSender().equals(stringServerConnectClientThreadEntry.getKey()))
+                new ObjectOutputStream(stringServerConnectClientThreadEntry.getValue().getSocket().getOutputStream())
+                        .writeObject(o);
+        }
     }
     public static void addSCT(String s,ServerConnectClientThread sct){
         hs.put(s,sct);
@@ -19,7 +27,7 @@ public class ManageConnectClient {
     public static String getOnlineList(){
         StringBuffer stringBuffer = new StringBuffer();
         for(Map.Entry s:ManageConnectClient.hs.entrySet()){
-            stringBuffer.append(s.getKey()+" ");
+            stringBuffer.append(s.getKey()).append(" ");
         }
         return new String(stringBuffer);
     }
@@ -29,7 +37,7 @@ public class ManageConnectClient {
     }
 
     public static void UpdateOnline(){
-        for (Map.Entry<String, ServerConnectClientThread> stringServerConnectClientThreadEntry : GetAll()) {
+        for (Map.Entry<String, ServerConnectClientThread> stringServerConnectClientThreadEntry : hs.entrySet()) {
             System.out.println(stringServerConnectClientThreadEntry.getKey() + stringServerConnectClientThreadEntry.getValue().getSocket().isClosed());
             if(stringServerConnectClientThreadEntry.getValue().getSocket().isClosed()) {
                 delSCT(stringServerConnectClientThreadEntry.getKey());
