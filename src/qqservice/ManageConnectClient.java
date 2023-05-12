@@ -10,11 +10,16 @@ import java.util.Map;
 public class ManageConnectClient {
     private static final HashMap<String,ServerConnectClientThread> hs = new HashMap<>();
 
-    public static void ToAll(Message o) throws IOException {
+    public static void ToAll(Message o){
         for (Map.Entry<String, ServerConnectClientThread> stringServerConnectClientThreadEntry : hs.entrySet()) {
-            if (!o.getSender().equals(stringServerConnectClientThreadEntry.getKey()))
-                new ObjectOutputStream(stringServerConnectClientThreadEntry.getValue().getSocket().getOutputStream())
-                        .writeObject(o);
+            if (!o.getSender().equals(stringServerConnectClientThreadEntry.getKey())) {
+                try {
+                    new ObjectOutputStream(stringServerConnectClientThreadEntry.getValue().getSocket().getOutputStream())
+                            .writeObject(o);
+                } catch (IOException e) {
+                    ManageOfflineMessage.AddMessage(o.getGetter(), o);
+                }
+            }
         }
     }
     public static void addSCT(String s,ServerConnectClientThread sct){

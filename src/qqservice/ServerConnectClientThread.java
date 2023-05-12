@@ -62,10 +62,7 @@ public class ServerConnectClientThread extends Thread{
                     break;
                 }else if(messageType.equals(MessageType.COMMON_MES)){
                     if(o.getGetter().equals("所有人")){
-                        for (Map.Entry<String, ServerConnectClientThread> stringServerConnectClientThreadEntry : ManageConnectClient.GetAll()) {
-                            if(!o.getSender().equals(stringServerConnectClientThreadEntry.getKey()))
-                                SendMessage(stringServerConnectClientThreadEntry.getValue(),o);
-                        }
+                            ManageConnectClient.ToAll(o);
                     }else{
                         SendMessage(ManageConnectClient.searchSCT(o.getGetter()),o);
                     }

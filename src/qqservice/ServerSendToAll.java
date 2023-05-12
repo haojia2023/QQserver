@@ -20,17 +20,12 @@ public class ServerSendToAll implements Runnable{
             if ("Exit".equalsIgnoreCase(s))
                 return;
             Message message = new Message();
-            message.setMessageType(MessageType.File_MES);
+            message.setMessageType(MessageType.COMMON_MES);
             message.setSender("服务器");
             message.setContent(s);
-            message.setGetter("-1");
+            message.setGetter("所有人");
             message.setSendTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()));//设置发送的时间的格式
-            try {
-                ManageConnectClient.ToAll(message);
-                System.out.println("发送成功");
-            } catch (IOException e) {
-                System.out.println("发送失败");
-            }
+            ManageConnectClient.ToAll(message);
         }
     }
 }
